@@ -13,10 +13,10 @@ namespace eCommerceStarterCode.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CartsController : ControllerBase
+    public class CartController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public CartsController(ApplicationDbContext context)
+        public CartController(ApplicationDbContext context)
         {
             _context = context;
         }
