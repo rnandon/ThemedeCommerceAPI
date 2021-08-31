@@ -53,7 +53,7 @@ namespace eCommerceStarterCode.Controllers
         public IActionResult UpdateProduct([FromBody] Product value)
         {
             Product productToChange = _context.Products.Find(value.ProductId);
-            if (productToChange != null)
+            if (productToChange == null)
             {
                 return NotFound();
             }
