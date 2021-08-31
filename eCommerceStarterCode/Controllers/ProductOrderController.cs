@@ -65,7 +65,10 @@ namespace eCommerceStarterCode.Controllers
             {
                 return NotFound();
             }
-            productOrderToChange = value;
+            productOrderToChange.ProductId = value.ProductId;
+            productOrderToChange.OrderId = value.OrderId;
+            productOrderToChange.Quantity = value.Quantity;
+            _context.Update(productOrderToChange);
             _context.SaveChanges();
             return Ok(value); 
         }
