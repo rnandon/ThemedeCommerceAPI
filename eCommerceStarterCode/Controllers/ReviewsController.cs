@@ -25,7 +25,7 @@ namespace eCommerceStarterCode.Controllers
             return Ok(reviews);
         }
 
-        [HttpPost]
+        [HttpPost("addreview")]
         public IActionResult Post([FromBody] Review value)
         {
             _context.Reviews.Add(value);
