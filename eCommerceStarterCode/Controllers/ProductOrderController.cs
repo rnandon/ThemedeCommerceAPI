@@ -61,7 +61,7 @@ namespace eCommerceStarterCode.Controllers
         public IActionResult UpdateProductOrder([FromBody] ProductOrder value)
         {
             ProductOrder productOrderToChange = _context.ProductOrders.Find(value.ProductOrderId);
-            if (productOrderToChange != null)
+            if (productOrderToChange == null)
             {
                 return NotFound();
             }
