@@ -29,7 +29,7 @@ namespace eCommerceStarterCode.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetUserCart(string id)
+        public IActionResult GetCartbyId(int id)
         {
             var cart = _context.Carts.Find(id);
             if (cart == null)
@@ -39,8 +39,17 @@ namespace eCommerceStarterCode.Controllers
             return Ok(cart);
         }
 
+        [HttpGet("user/{userId}")]
+        public IActionResult GetCartbyUser(string id)
+        {
+            var user = _context.Users.Find(id);
+            var userCart = _context.Carts.Where(x => x.User == user);
+
+            return Ok(userCart);
+        }
+
         [HttpPost]
-        public IActionResult NewUserCart([FromBody] Cart cart)
+        public IActionResult NewCart([FromBody] Cart cart)
         {
             _context.Carts.Add(cart);
             _context.SaveChanges();
