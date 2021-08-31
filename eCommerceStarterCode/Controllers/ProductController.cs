@@ -49,6 +49,19 @@ namespace eCommerceStarterCode.Controllers
             return Ok(products);
         }
 
+        [HttpPut]
+        public IActionResult UpdateProduct([FromBody] Product value)
+        {
+            Product productToChange = _context.Products.Find(value.ProductId);
+            if (productToChange != null)
+            {
+                return NotFound();
+            }
+            productToChange = value;
+            _context.SaveChanges();
+            return Ok(value);
+        }
+
         [HttpPost]
         public IActionResult NewProduct([FromBody] Product value)
         {
