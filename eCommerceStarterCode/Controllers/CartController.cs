@@ -20,12 +20,12 @@ namespace eCommerceStarterCode.Controllers
             _context = context;
         }
         
-        [HttpGet]
-        public IActionResult GetAllCarts()
-        {
-            var carts = _context.Carts;
-            return Ok(carts);
-        }
+        //[HttpGet]
+        //public IActionResult GetAllCarts()
+        //{
+        //    var carts = _context.Carts;
+        //    return Ok(carts);
+        //}
 
         [HttpGet("{id}")]
         public IActionResult GetUserCart(string id)
