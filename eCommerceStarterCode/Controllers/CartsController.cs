@@ -49,24 +49,24 @@ namespace eCommerceStarterCode.Controllers
         }
 
         [HttpPost]
-        public IActionResult NewCart([FromBody] Cart cart)
+        public IActionResult NewCart([FromBody] Cart value)
         {
-            _context.Carts.Add(cart);
+            _context.Carts.Add(value);
             _context.SaveChanges();
-            return StatusCode(201, cart);
+            return StatusCode(201, value);
         }
 
         [HttpPut]
-        public IActionResult UpdateCart([FromBody] Cart cart)
+        public IActionResult UpdateCart([FromBody] Cart value)
         {
-            Cart cartToChange = _context.Carts.Find(cart.CartId);
+            Cart cartToChange = _context.Carts.Find(value.CartId);
             if (cartToChange != null)
             {
                 return NotFound();
             }
-            cartToChange = cart;
+            cartToChange = value;
             _context.SaveChanges();
-            return Ok(cart);
+            return Ok(value);
         }
 
         [HttpDelete("{id}")]
