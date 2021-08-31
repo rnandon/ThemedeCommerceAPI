@@ -61,9 +61,13 @@ namespace eCommerceStarterCode.Controllers
         public IActionResult UpdateProductOrder([FromBody] ProductOrder value)
         {
             ProductOrder productToChange = _context.ProductOrders.Find(value.ProductOrderId);
-            productToChange = value;
-            _context.SaveChanges();
-            return Ok(value);
+            if (productToChange != null)
+            {
+                productToChange = value;
+                _context.SaveChanges();
+                return Ok(value); 
+            }
+            return NotFound();
         }
 
         [HttpDelete("{id}")]
