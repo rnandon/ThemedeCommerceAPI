@@ -40,11 +40,14 @@ namespace eCommerceStarterCode.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public IActionResult GetCartbyUser(string id)
+        public IActionResult GetCartbyUser(string userId)
         {
-            var user = _context.Users.Find(id);
+            var user = _context.Users.Find(userId);
             var userCart = _context.Carts.Where(x => x.User == user);
-
+            if (user == null)
+            {
+                return NotFound();
+            }
             return Ok(userCart);
         }
 
@@ -60,11 +63,14 @@ namespace eCommerceStarterCode.Controllers
         public IActionResult UpdateCart([FromBody] Cart value)
         {
             Cart cartToChange = _context.Carts.Find(value.CartId);
-            if (cartToChange != null)
+            if (cartToChange == null)
             {
                 return NotFound();
             }
-            cartToChange = value;
+            cartToChange.UserId = value.UserId;
+            cartToChange.ProductId = value.ProductId;
+            cartToChange.Quantity = value.Quantity;
+            _context.Update(cartToChange);
             _context.SaveChanges();
             return Ok(value);
         }
