@@ -3,6 +3,7 @@ using eCommerceStarterCode.DataTransferObjects;
 using eCommerceStarterCode.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Exchange.WebServices.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,19 +11,20 @@ using System.Threading.Tasks;
 
 namespace eCommerceStarterCode.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+[Route("api/[controller]")]
+[ApiController]
     public class OrderController : ControllerBase
-    {
+{
         private readonly ApplicationDbContext _context;
         public OrderController(ApplicationDbContext context)
-        {
+    {
             _context = context;
-        }
+    }
 
-        [HttpGet]
+    // GET: api/Orders
+    [HttpGet]
         public IActionResult GetAllOrders()
-        {
+    {
             var products = _context.Orders;
             return Ok(products);
         }
@@ -65,19 +67,19 @@ namespace eCommerceStarterCode.Controllers
 
             Order orderToChange = _context.Orders.Find(value.OrderId);
             if (orderToChange == null)
-            {
+        {
                 return NotFound();
-            }
+        }
             orderToChange.UserId = value.UserId;
             orderToChange.Date = value.Date;
             _context.Update(orderToChange);
             _context.SaveChanges();
             return Ok(orderToChange);
-        }
+    }
 
         [HttpPost]
         public IActionResult NewOrder([FromBody] OrderDto value)
-        {
+    {
             DateTime usableDate = new DateTime(value.Year, value.Month, value.Day, value.Hours, value.Minutes, value.Seconds);
             Order newOrder = new Order() { UserId = value.UserId, Date = usableDate };
 
@@ -91,12 +93,12 @@ namespace eCommerceStarterCode.Controllers
         {
             var orderToDelete = _context.Orders.Find(id);
             if (orderToDelete == null)
-            {
+        {
                 return NotFound();
             }
             _context.Orders.Remove(orderToDelete);
             _context.SaveChanges();
             return Ok();
         }
+        }
     }
-}
