@@ -3,6 +3,7 @@ using eCommerceStarterCode.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,6 +48,18 @@ namespace eCommerceStarterCode.Controllers
             var productOrders = _context.ProductOrders.Where(x => x.Order == orderToFind);
 
             return Ok(productOrders);
+        }
+
+        [HttpGet("seller/{sellerId}")]
+        public IActionResult GetProductOrdersBySeller(string sellerId)
+        {
+            User seller = _context.Users.Find(sellerId);
+            if (seller == null)
+            {
+                return NotFound();
+            }
+            var sellersProductOrders = _context.ProductOrders.Include(po => po.Product).Where(po => po.Product.Seller == seller);
+            return Ok(sellersProductOrders);
         }
 
         [HttpPost]
