@@ -14,6 +14,7 @@ namespace eCommerceStarterCode.Controllers
         {
             _context = context;
         }
+
         // <baseurl>/api/categories
         [HttpGet]
         public IActionResult GetAllCategories()
@@ -21,7 +22,6 @@ namespace eCommerceStarterCode.Controllers
             var categories = _context.Categories;
             return Ok(categories);
         }
-
 
         // <baseurl>/api/category/1
         [HttpGet("{id}")]
@@ -34,6 +34,7 @@ namespace eCommerceStarterCode.Controllers
             }
             return Ok(categories);
         }
+
         [HttpPost]
         public IActionResult NewCategory([FromBody] Category value)
         {

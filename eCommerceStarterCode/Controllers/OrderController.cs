@@ -3,7 +3,6 @@ using eCommerceStarterCode.DataTransferObjects;
 using eCommerceStarterCode.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Exchange.WebServices.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,9 +66,9 @@ namespace eCommerceStarterCode.Controllers
 
             Order orderToChange = _context.Orders.Find(value.OrderId);
             if (orderToChange == null)
-        {
+            {
                 return NotFound();
-        }
+            }
             orderToChange.UserId = value.UserId;
             orderToChange.Date = value.Date;
             _context.Update(orderToChange);

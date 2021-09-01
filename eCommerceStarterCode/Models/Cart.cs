@@ -8,8 +8,6 @@ namespace eCommerceStarterCode.Models
 {
     public class Cart
     {
-        internal readonly object Lines;
-
         public int CartId { get; set; }
         [ForeignKey("User")]
         public string UserId { get; set; }
@@ -18,10 +16,5 @@ namespace eCommerceStarterCode.Models
         public int ProductId { get; set; }
         public Product Product { get; set; }
         public int Quantity { get; set; }
-
-        internal void Clear()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

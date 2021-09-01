@@ -8,14 +8,11 @@ namespace eCommerceStarterCode.Models
 {
     public class Order
     {
-        internal bool Shipped;
-
         public int OrderId { get; set; }
         [ForeignKey("User")]
         public string UserId { get; set; }
         public User User { get; set; }
         public DateTime Date { get; set; }
-        public object Lines { get; internal set; }
     }
 }
 
