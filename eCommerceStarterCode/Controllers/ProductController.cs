@@ -61,13 +61,19 @@ namespace eCommerceStarterCode.Controllers
             return Ok(sellersProducts);
         }
 
-        [HttpPut]
+        [HttpPut, Authorize]
         public IActionResult UpdateProduct([FromBody] Product value)
         {
+            string userId = User.FindFirstValue("id");
+            User currentUser = _context.Users.Find(userId);
             Product productToChange = _context.Products.Find(value.ProductId);
-            if (productToChange == null)
+            if (productToChange == null || currentUser == null)
             {
                 return NotFound();
+            }
+            else if (productToChange.Seller != currentUser)
+            {
+                return Unauthorized();
             }
             productToChange.CategoryId = value.CategoryId;
             productToChange.Description = value.Description;
@@ -76,10 +82,10 @@ namespace eCommerceStarterCode.Controllers
             productToChange.UserId = value.UserId;
             _context.Update(productToChange);
             _context.SaveChanges();
-            return Ok(value);
+            return Ok(productToChange);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public IActionResult NewProduct([FromBody] Product value)
         {
             _context.Products.Add(value);
@@ -87,13 +93,19 @@ namespace eCommerceStarterCode.Controllers
             return StatusCode(201, value);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public IActionResult DeleteProduct(int id)
         {
+            string userId = User.FindFirstValue("id");
+            User currentUser = _context.Users.Find(userId);
             var productToDelete = _context.Products.Find(id);
-            if (productToDelete == null)
+            if (productToDelete == null || currentUser == null)
             {
                 return NotFound();
+            }
+            else if (productToDelete.Seller != currentUser)
+            {
+                return Unauthorized();
             }
             _context.Products.Remove(productToDelete);
             _context.SaveChanges();
