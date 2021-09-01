@@ -49,6 +49,18 @@ namespace eCommerceStarterCode.Controllers
             return Ok(products);
         }
 
+        [HttpGet("seller/{sellerId}")]
+        public IActionResult GetProductsBySeller(string sellerId)
+        {
+            User seller = _context.Users.Find(sellerId);
+            if (seller == null)
+            {
+                return NotFound();
+            }
+            var sellersProducts = _context.Products.Where(x => x.Seller == seller);
+            return Ok(sellersProducts);
+        }
+
         [HttpPut]
         public IActionResult UpdateProduct([FromBody] Product value)
         {
