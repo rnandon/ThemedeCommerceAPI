@@ -3,6 +3,7 @@ using eCommerceStarterCode.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,18 @@ namespace eCommerceStarterCode.Controllers
             return Ok(productOrders);
         }
 
+        [HttpGet("seller/{sellerId}")]
+        public IActionResult GetProductOrdersBySeller(string sellerId)
+        {
+            User seller = _context.Users.Find(sellerId);
+            if (seller == null)
+            {
+                return NotFound();
+            }
+            var sellersProductOrders = _context.ProductOrders.Include(po => po.Product).Where(po => po.Product.Seller == seller);
+            return Ok(sellersProductOrders);
+        }
+
         [HttpPost]
         public IActionResult NewProductOrder([FromBody] ProductOrder value)
         {
@@ -61,7 +74,7 @@ namespace eCommerceStarterCode.Controllers
         public IActionResult UpdateProductOrder([FromBody] ProductOrder value)
         {
             ProductOrder productOrderToChange = _context.ProductOrders.Find(value.ProductOrderId);
-            if (productOrderToChange != null)
+            if (productOrderToChange == null)
             {
                 return NotFound();
             }
