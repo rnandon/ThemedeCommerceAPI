@@ -21,6 +21,8 @@ namespace eCommerceStarterCode.Controllers
             _context = context;
         }
 
+        // <baseurl>/api/product
+        // Openly available.
         [HttpGet]
         public IActionResult GetAllProducts()
         {
@@ -28,7 +30,9 @@ namespace eCommerceStarterCode.Controllers
             return Ok(products);
         }
 
-        // <baseurl>/api/examples/user
+
+        // <baseurl>/api/product/<id>
+        // Openly available.
         [HttpGet("{id}")]
         public IActionResult GetSelectedProduct(int id)
         {
@@ -40,6 +44,8 @@ namespace eCommerceStarterCode.Controllers
             return Ok(product);
         }
 
+        // <baseurl>/api/product/category/<categoryId>
+        // Openly available.
         [HttpGet("category/{categoryId}")]
         public IActionResult GetProductsByCategory(int categoryId)
         {
@@ -49,6 +55,8 @@ namespace eCommerceStarterCode.Controllers
             return Ok(products);
         }
 
+        // <baseurl>/api/product/seller/<sellerId>
+        // Openly available.
         [HttpGet("seller/{sellerId}")]
         public IActionResult GetProductsBySeller(string sellerId)
         {
@@ -61,14 +69,28 @@ namespace eCommerceStarterCode.Controllers
             return Ok(sellersProducts);
         }
 
-        [HttpPut]
+        // <baseurl>/api/product
+        // Only available to seller.
+        [HttpPut, Authorize]
         public IActionResult UpdateProduct([FromBody] Product value)
         {
+            // Get current user and requested product to change
+            string userId = User.FindFirstValue("id");
+            User currentUser = _context.Users.Find(userId);
             Product productToChange = _context.Products.Find(value.ProductId);
-            if (productToChange == null)
+
+            // Check for real values
+            if (productToChange == null || currentUser == null)
             {
                 return NotFound();
             }
+            // check that currentUser is seller
+            else if (productToChange.Seller != currentUser)
+            {
+                return Unauthorized();
+            }
+
+            // Update info
             productToChange.CategoryId = value.CategoryId;
             productToChange.Description = value.Description;
             productToChange.Name = value.Name;
@@ -76,10 +98,13 @@ namespace eCommerceStarterCode.Controllers
             productToChange.UserId = value.UserId;
             _context.Update(productToChange);
             _context.SaveChanges();
-            return Ok(value);
+            return Ok(productToChange);
         }
 
-        [HttpPost]
+
+        // <baseurl>/api/product
+        // Openly available.
+        [HttpPost, Authorize]
         public IActionResult NewProduct([FromBody] Product value)
         {
             _context.Products.Add(value);
@@ -87,14 +112,29 @@ namespace eCommerceStarterCode.Controllers
             return StatusCode(201, value);
         }
 
-        [HttpDelete("{id}")]
+
+        // <baseurl>/api/product/<id>
+        // Only available to seller.
+        [HttpDelete("{id}"), Authorize]
         public IActionResult DeleteProduct(int id)
         {
+            // Get current user and requested product to delete
+            string userId = User.FindFirstValue("id");
+            User currentUser = _context.Users.Find(userId);
             var productToDelete = _context.Products.Find(id);
-            if (productToDelete == null)
+
+            // Check for real values
+            if (productToDelete == null || currentUser == null)
             {
                 return NotFound();
             }
+            // Verify currentUser is seller
+            else if (productToDelete.Seller != currentUser)
+            {
+                return Unauthorized();
+            }
+
+            // Delete and save
             _context.Products.Remove(productToDelete);
             _context.SaveChanges();
             return Ok();
