@@ -1,6 +1,7 @@
 ﻿using eCommerceStarterCode.Data;
 using eCommerceStarterCode.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,14 +26,41 @@ namespace eCommerceStarterCode.Controllers
             return Ok(reviews);
         }
 
-        [HttpPost("addreview")]
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            var reviews = _context.Reviews.Include(r => r.Product).Include(r => r.User).Where(review => review.ProductId == id);
+            return Ok(reviews);
+        }
+
+        [HttpPost]
         public IActionResult Post([FromBody] Review value)
         {
             _context.Reviews.Add(value);
+            var product = _context.Products.FirstOrDefault(product => product.ProductId == value.ProductId);
             _context.SaveChanges();
-            return StatusCode(201, value);
+            return Ok(value);
         }
 
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] Review value)
+        {
+            var review = _context.Reviews.FirstOrDefault(review => review.ReviewId == id);
+            review.Body = value.Body;
+            review.Rating = value.Rating;
+            review.UserId = value.UserId;
+            _context.SaveChanges();
+            return Ok(review);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var review = _context.Reviews.FirstOrDefault(review => review.ReviewId == id);
+            _context.Remove(review);
+            _context.SaveChanges();
+            return Ok();
+        }
 
     }
 }
