@@ -1,10 +1,12 @@
 ﻿using eCommerceStarterCode.Data;
 using eCommerceStarterCode.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace eCommerceStarterCode.Controllers
@@ -33,19 +35,25 @@ namespace eCommerceStarterCode.Controllers
             return Ok(reviews);
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public IActionResult Post([FromBody] Review value)
         {
+            string userId = User.FindFirstValue("id");
+            User currentUser = _context.Users.Find(userId);
+
             _context.Reviews.Add(value);
             var product = _context.Products.FirstOrDefault(product => product.ProductId == value.ProductId);
             _context.SaveChanges();
             return Ok(value);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public IActionResult Put(int id, [FromBody] Review value)
         {
+            string userId = User.FindFirstValue("id");
+            User currentUser = _context.Users.Find(userId);
             var review = _context.Reviews.FirstOrDefault(review => review.ReviewId == id);
+
             review.Body = value.Body;
             review.Rating = value.Rating;
             review.UserId = value.UserId;
@@ -53,14 +61,17 @@ namespace eCommerceStarterCode.Controllers
             return Ok(review);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public IActionResult Delete(int id)
         {
+
+            string userId = User.FindFirstValue("id");
+            User currentUser = _context.Users.Find(userId);
             var review = _context.Reviews.FirstOrDefault(review => review.ReviewId == id);
-            _context.Remove(review);
+
+            _context.Reviews.Remove(review);
             _context.SaveChanges();
             return Ok();
         }
-
     }
 }
