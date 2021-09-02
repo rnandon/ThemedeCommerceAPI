@@ -64,7 +64,7 @@ namespace eCommerceStarterCode.Controllers
         [HttpDelete("{id}"), Authorize]
         public IActionResult Delete(int id)
         {
-            // Get current user and requested product to delete
+
             string userId = User.FindFirstValue("id");
             User currentUser = _context.Users.Find(userId);
             var review = _context.Reviews.FirstOrDefault(review => review.ReviewId == id);
