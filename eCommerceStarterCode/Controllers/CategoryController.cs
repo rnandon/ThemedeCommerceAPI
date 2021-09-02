@@ -2,7 +2,7 @@
 using eCommerceStarterCode.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using System.Security.Claims;
 
 namespace eCommerceStarterCode.Controllers
 {
@@ -15,7 +15,6 @@ namespace eCommerceStarterCode.Controllers
         {
             _context = context;
         }
-
         // <baseurl>/api/categories
         [HttpGet]
         public IActionResult GetAllCategories()
@@ -23,6 +22,7 @@ namespace eCommerceStarterCode.Controllers
             var categories = _context.Categories;
             return Ok(categories);
         }
+
 
         // <baseurl>/api/category/1
         [HttpGet("{id}")]
@@ -35,10 +35,16 @@ namespace eCommerceStarterCode.Controllers
             }
             return Ok(categories);
         }
+        [HttpPost, Authorize]
 
-        [HttpPost]
         public IActionResult NewCategory([FromBody] Category value)
         {
+            string userId = User.FindFirstValue("id");
+            User currentUser = _context.Users.Find(userId);
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
             _context.Categories.Add(value);
             _context.SaveChanges();
             return StatusCode(201, value);
@@ -47,16 +53,20 @@ namespace eCommerceStarterCode.Controllers
         [HttpDelete("{id}"), Authorize]
         public IActionResult DeleteCategory(int id)
         {
+            string userId = User.FindFirstValue("id");
+            User currentUser = _context.Users.Find(userId);
             var categoryToDelete = _context.Categories.Find(id);
             if (categoryToDelete == null)
             {
                 return NotFound();
             }
-            _context.Categories.Remove(categoryToDelete);
-            _context.SaveChanges();
-            return Ok();
+            {
+                _context.Categories.Remove(categoryToDelete);
+                _context.SaveChanges();
+                return Ok();
+            }
         }
     }
 
 }
-        
+
