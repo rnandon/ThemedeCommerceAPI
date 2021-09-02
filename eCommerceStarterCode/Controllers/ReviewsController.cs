@@ -60,7 +60,7 @@ namespace eCommerceStarterCode.Controllers
             _context.SaveChanges();
             return Ok(review);
         }
-        
+
         [HttpDelete("{id}"), Authorize]
         public IActionResult Delete(int id)
         {
