@@ -75,15 +75,7 @@ namespace eCommerceStarterCode.Controllers
         [HttpGet("search/{searchTerm}")]
         public IActionResult GetProductSearchResults(string searchTerm)
         {
-            var allProducts = _context.Products.Include(p => p.Category).ToList();
-            List<Product> relevantProducts = new List<Product>();
-            foreach (Product product in allProducts)
-            {
-                if (product.ToString().Contains(searchTerm))
-                {
-                    relevantProducts.Add(product);
-                }
-            }
+            var relevantProducts = _context.Products.Include(p => p.Category).ToList().Where(p => p.ToString().Contains(searchTerm));
 
             return Ok(relevantProducts);
         }
