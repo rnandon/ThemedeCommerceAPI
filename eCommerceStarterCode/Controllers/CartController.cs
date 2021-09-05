@@ -45,7 +45,7 @@ namespace eCommerceStarterCode.Controllers
             return Ok(cart);
         }
 
-        [HttpGet("user/{userId}"), Authorize]
+        [HttpGet("user/{id}"), Authorize]
         public IActionResult GetCartbyUser(string id)
         {
             string userId = User.FindFirstValue("id");
