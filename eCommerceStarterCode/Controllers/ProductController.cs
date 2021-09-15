@@ -3,6 +3,7 @@ using eCommerceStarterCode.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +68,16 @@ namespace eCommerceStarterCode.Controllers
             }
             var sellersProducts = _context.Products.Where(x => x.Seller == seller);
             return Ok(sellersProducts);
+        }
+
+        // <baseurl>/api/product/search/<searchTerm>
+        // Openly available.
+        [HttpGet("search/{searchTerm}")]
+        public IActionResult GetProductSearchResults(string searchTerm)
+        {
+            var relevantProducts = _context.Products.Include(p => p.Category).ToList().Where(p => p.ToString().ToLower().Contains(searchTerm));
+
+            return Ok(relevantProducts);
         }
 
         // <baseurl>/api/product

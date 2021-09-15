@@ -3,6 +3,7 @@ using eCommerceStarterCode.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace eCommerceStarterCode.Controllers
             return Ok(cart);
         }
 
-        [HttpGet("user/{userId}"), Authorize]
+        [HttpGet("user/{id}"), Authorize]
         public IActionResult GetCartbyUser(string id)
         {
             string userId = User.FindFirstValue("id");
@@ -59,7 +60,7 @@ namespace eCommerceStarterCode.Controllers
             {
                 return Unauthorized();
             }
-            var userCart = _context.Carts.Where(x => x.User == user);
+            var userCart = _context.Carts.Include(c => c.Product).Where(x => x.User == user);
             return Ok(userCart);
         }
 

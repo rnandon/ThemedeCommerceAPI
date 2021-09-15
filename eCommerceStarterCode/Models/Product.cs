@@ -18,5 +18,17 @@ namespace eCommerceStarterCode.Models
         [ForeignKey("Seller")]
         public string UserId { get; set; }
         public User Seller { get; set; }
+
+        public override string ToString()
+        {
+            string output = "";
+            output += this.ProductId.ToString();
+            output += this.Name;
+            output += this.Description;
+            output += this.Category.Name;
+            output += this.Category.Description;
+
+            return output;
+        }
     }
 }

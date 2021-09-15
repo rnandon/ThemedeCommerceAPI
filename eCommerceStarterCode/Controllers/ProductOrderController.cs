@@ -101,6 +101,23 @@ namespace eCommerceStarterCode.Controllers
             return StatusCode(201, value);
         }
 
+        [HttpPost("order"), Authorize]
+        public IActionResult MultipleProductOrders([FromBody] List<ProductOrder> values)
+        {
+            string userId = User.FindFirstValue("id");
+            User currentUser = _context.Users.Find(userId);
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
+            foreach (ProductOrder value in values)
+            {
+                _context.ProductOrders.Add(value);
+            }
+            _context.SaveChanges();
+            return StatusCode(201, values);
+        }
+
         // <baseurl>/api/productorder
         // Only available to buyer or seller. 
         [HttpPut]
